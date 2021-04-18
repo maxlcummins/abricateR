@@ -1,0 +1,11 @@
+Package: abricateR
+Type: Package
+Title: abricateR: a package for the processing of abricate, pMLST, pointfinder data.
+Version: 0.1.0
+Author: Who wrote it
+Maintainer: Max Cummins <max.l.cummins@gmail.com>
+Description: A function for processing abricate output and combining it with
+    pointfinder and pMLST data. Also generates data on ColV carriage based on the Liu criteria.
+License: GNU
+Encoding: UTF-8
+LazyData: true
