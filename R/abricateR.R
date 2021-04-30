@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-#' A function for processing abricate output and combining it with pointfinder and pMLST data. Also generates data on ColV carriage based on the Liu criteria.
+#' A function for processing abricate output.
 #
 #' Read the documents on the github page https://github.com/maxlcummins/abricateR for more info
 #' @param abricate_in Filename of your abricate input
@@ -160,6 +160,25 @@ abricateR <-
                                         value.var = 'gene_present',
                                         drop = FALSE
                                 )
+
+                                #Add helper function to create columns where they are missing.
+                                #Thanks @Onyambu - https://stackoverflow.com/questions/45857787/adding-column-if-it-does-not-exist
+
+                                fncols <- function(data2, cname) {
+                                  add <-cname[!cname%in%names(data2)]
+
+                                  if(length(add)!=0) data2[add] <- 0
+                                  assign("simple_summary", data2, envir=parent.env(environment()))
+                                  message("\n")
+                                  message("Some columns were missing from ColV databases, they have now been added: ")
+                                  message(as.character(cat(add)), "\n")
+                                }
+
+                                #Create a list of the columns that could be missing
+                                colV_cols <- c("cvaA", "cvaB", "cvaC", "cvi", "iroB", "iroC", "iroD", "iroE", "iroN", "iucA", "iucB", "iucC", "iucD", "iutA", "etsA", "etsB", "etsC", "ompT", "hlyF", "sitA", "sitB", "sitC", "sitD")
+
+                                #Add the appropriate columns if missing with our helper function
+                                fncols(simple_summary, colV_cols)
 
                                 #create a new column for each group of genes and assign to each cell in this column the sum of the number of genes from each group present in a given sample
                                 simple_summary <-
