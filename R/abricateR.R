@@ -48,7 +48,24 @@ abricateR <-
                         "\t",
                         escape_double = FALSE,
                         trim_ws = TRUE,
-                        col_names = TRUE
+                        col_names = TRUE,
+                        col_types = cols(
+                          name = col_character(),
+                          SEQUENCE = col_character(),
+                          START = col_double(),
+                          END = col_double(),
+                          STRAND = col_character(),
+                          GENE = col_character(),
+                          COVERAGE = col_character(),
+                          COVERAGE_MAP = col_character(),
+                          GAPS = col_character(),
+                          `%COVERAGE` = col_double(),
+                          `%IDENTITY` = col_double(),
+                          DATABASE = col_character(),
+                          ACCESSION = col_character(),
+                          PRODUCT = col_character(),
+                          RESISTANCE = col_character()
+                        )
                 )
 
                 #Remove cases where there are multiple headers from concatenation of abricate reports
@@ -78,7 +95,15 @@ abricateR <-
                                 pointfinder_data,
                                 "\t",
                                 escape_double = FALSE,
-                                trim_ws = TRUE
+                                trim_ws = TRUE,
+                                col_types = cols(
+                                  name = col_character(),
+                                  Mutation = col_character(),
+                                  `Nucleotide change` = col_character(),
+                                  `Amino acid change` = col_character(),
+                                  Resistance = col_character(),
+                                  PMID = col_double()
+                                )
                         )
 
                         #fix colnames of res_snps for consistency
@@ -102,14 +127,20 @@ abricateR <-
 
                         res_snps <- as.data.table(res_snps)
 
-                        #Cast the dataframe into a more usable format
-                        res_snps2 <-
-                                data.table::dcast(
-                                        data = res_snps,
-                                        formula = name ~ GENE,
-                                        value.var = 'gene_present',
-                                        drop = FALSE
-                                )
+                        if(nrow(res_snps) > 0){
+                          #Cast the dataframe into a more usable format
+                          res_snps2 <-
+                            data.table::dcast(
+                              data = res_snps,
+                              formula = name ~ GENE,
+                              value.var = 'gene_present',
+                              drop = FALSE
+                            )
+                        }else{
+                          res_snps2 <- NULL
+                          }
+
+
 
                 }
 
@@ -118,7 +149,24 @@ abricateR <-
                         colv <- read_delim(abricate_in,
                                            "\t",
                                            escape_double = FALSE,
-                                           trim_ws = TRUE)
+                                           trim_ws = TRUE,
+                                           col_types = cols(
+                                             name = col_character(),
+                                             SEQUENCE = col_character(),
+                                             START = col_double(),
+                                             END = col_double(),
+                                             STRAND = col_character(),
+                                             GENE = col_character(),
+                                             COVERAGE = col_character(),
+                                             COVERAGE_MAP = col_character(),
+                                             GAPS = col_character(),
+                                             `%COVERAGE` = col_double(),
+                                             `%IDENTITY` = col_double(),
+                                             DATABASE = col_character(),
+                                             ACCESSION = col_character(),
+                                             PRODUCT = col_character(),
+                                             RESISTANCE = col_character()
+                                           ))
 
                         #Remove cases where there are multiple headers from concatenation of abricate reports
                         colv <- colv %>% filter(grepl("colV", DATABASE))
@@ -273,7 +321,13 @@ abricateR <-
 
                 if (pMLST_data != "c") {
                         pMLST <- read_delim(pMLST_data,
-                                            "\t", escape_double = FALSE, trim_ws = TRUE)
+                                            "\t", escape_double = FALSE,
+                                            trim_ws = TRUE,
+                                            col_types = cols(
+                                              name = col_character(),
+                                              pMLST_scheme = col_character(),
+                                              pMLST = col_character()
+                                            ))
 
                         pMLST <- as.data.table(pMLST)
 
@@ -330,16 +384,21 @@ abricateR <-
 
                 #df1 <- as.data.table(df1)
 
-                dcast(
+
+                df3<- dcast(
                         data = df1,
                         name ~ GENE,
                         value.var = 'gene_present',
                         drop = FALSE
-                ) -> df3
+                )
                 if (pointfinder_data != "a") {
-                        df3 <- left_join(df3, res_snps2)
-                        df3[is.na(df3)] <- 0
-                        message("Combining pointfinder data...")
+                        if(!is.null(res_snps2)){
+                          df3 <- left_join(df3, res_snps2)
+                          df3[is.na(df3)] <- 0
+                          message("Combining pointfinder data...")
+                        }else{
+                          message("Pointfinder data provided but was blank...")
+                        }
                 }
                 if (ColV_Liu_data == "b") {
                         df3 <- left_join(df3, ColV_binary)
@@ -388,7 +447,8 @@ abricateR <-
                                         sep = "."
                                 ),
                                 ".csv",
-                                sep = ""
+                                sep = "",
+
                         ))
                         write.csv(df2, paste(
                                 output_directory,
@@ -430,8 +490,9 @@ abricateR <-
                                         sep = ""
                                 ),
                                 ".csv",
-                                sep = ""
-                        ))
+                                sep = "",
+                        )
+                              )
                         message("Writing complete; script finished.")
                 }
                 else {
