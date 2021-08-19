@@ -182,7 +182,7 @@ abricateR <-
 
                         #apply our filter to only allow genes which have a percent coverage of >=95 and a percent identity of >=90
                         colv <-
-                                colv %>% filter(perc_coverage >= 90) %>% filter(perc_identity >= 95)
+                                colv %>% filter(perc_coverage >= length) %>% filter(perc_identity >= identity)
 
                         if(nrow(colv) > 0){
 
@@ -385,7 +385,7 @@ abricateR <-
                 #df1 <- as.data.table(df1)
 
 
-                df3<- dcast(
+                df3<- data.table::dcast(
                         data = df1,
                         name ~ GENE,
                         value.var = 'gene_present',
