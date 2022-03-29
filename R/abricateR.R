@@ -130,7 +130,7 @@ abricateR <-
                         if(nrow(res_snps) > 0){
                           #Cast the dataframe into a more usable format
                           res_snps2 <-
-                            data.table::dcast(
+                            reshape2::dcast(
                               data = res_snps,
                               formula = name ~ GENE,
                               value.var = 'gene_present',
@@ -202,10 +202,11 @@ abricateR <-
 
                                 #cast the data to generate a table showing which genes are present and which genes are absent
                                 #i.e. make the list wide rather than long
-                                simple_summary <- dcast(
+                                simple_summary <- reshape2::dcast(
                                         data = colv,
                                         name ~ GENE,
                                         value.var = 'gene_present',
+                                        fill = 0,
                                         drop = FALSE
                                 )
 
@@ -331,7 +332,7 @@ abricateR <-
 
                         pMLST <- as.data.table(pMLST)
 
-                        pMLST <- data.table::dcast(
+                        pMLST <- reshape2::dcast(
                                 data = pMLST,
                                 name ~ pMLST_scheme,
                                 value.var = "pMLST",
@@ -385,7 +386,7 @@ abricateR <-
                 #df1 <- as.data.table(df1)
 
 
-                df3<- data.table::dcast(
+                df3<- reshape2::dcast(
                         data = df1,
                         name ~ GENE,
                         value.var = 'gene_present',
@@ -447,8 +448,7 @@ abricateR <-
                                         sep = "."
                                 ),
                                 ".csv",
-                                sep = "",
-
+                                sep = ""
                         ))
                         write.csv(df2, paste(
                                 output_directory,
@@ -490,7 +490,7 @@ abricateR <-
                                         sep = ""
                                 ),
                                 ".csv",
-                                sep = "",
+                                sep = ""
                         )
                               )
                         message("Writing complete; script finished.")
