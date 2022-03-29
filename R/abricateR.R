@@ -280,7 +280,7 @@ abricateR <-
                                 #CHECK THIS
                                 simple_summary[is.na(simple_summary)] <- 0
 
-                                assign(paste(name, "colv", paste("N", 95, sep = ""), paste("L", 90, sep =""), sep = "."), simple_summary, envir=globalenv())
+                                assign(paste(name, "colv", paste("N", identity, sep = ""), paste("L", length, sep =""), sep = "."), simple_summary, envir=globalenv())
                                 assign(paste(name, "colv_summary", sep = "."), colv, envir=globalenv())
                                 ColV_binary <- simple_summary %>% select(name, ColV)
                         }else{
