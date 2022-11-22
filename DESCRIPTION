@@ -1,7 +1,7 @@
 Package: abricateR
 Type: Package
 Title: abricateR: a package for the processing of abricate, pMLST, pointfinder data.
-Version: 0.1.1
+Version: 0.1.2
 Author: Who wrote it
 Maintainer: Max Cummins <max.l.cummins@gmail.com>
 Description: A function for processing abricate output and combining it with
