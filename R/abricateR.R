@@ -327,7 +327,7 @@ abricateR <-
                                             col_types = cols(
                                               name = col_character(),
                                               pMLST_scheme = col_character(),
-                                              pMLST = col_character()
+                                              Sequence_type = col_character()
                                             ))
 
                         pMLST <- as.data.table(pMLST)
@@ -335,7 +335,7 @@ abricateR <-
                         pMLST <- reshape2::dcast(
                                 data = pMLST,
                                 name ~ pMLST_scheme,
-                                value.var = "pMLST",
+                                value.var = "Sequence_type",
                                 drop = FALSE,
                                 fun.aggregate=function(x) paste(x, collapse = "/ ")
                         )
